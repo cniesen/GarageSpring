@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.spring.io/libs-release" }
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.0.RELEASE")
+    }
+}
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+version = '1.0'
+
+processResources{
+    filter ReplaceTokens, tokens:['version': version + ' (build ' + new Date().format("MM/dd/yyyy HH:mm:ss")+ ')']
+}
+
+jar {
+    baseName = 'garage'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("com.pi4j:pi4j-core:0.0.5")
+}
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2.1'
+}
+
