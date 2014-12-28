@@ -1,4 +1,7 @@
 security.user.password: garage
+server.ssl.key-store: keystore.jks
+server.ssl.key-store-password: sample
+server.ssl.key-password: sample
 gpio.simulation: true
 
 garage:
