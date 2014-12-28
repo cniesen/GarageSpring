@@ -1,0 +1,20 @@
+security.user.password: garage
+gpio.simulation: true
+
+garage:
+    doors:
+        1:
+            id: 1
+            description: Double Garage Door
+            openerSwitchPin: 0
+            closedSensorPin: 1
+        2:
+            id: 2
+            description: Single Garage Door
+            openerSwitchPin: 2
+            closedSensorPin: 3
+info:
+    build:
+        name: ${name}
+        description: ${description}
+        version: ${version}

@@ -1,5 +1,6 @@
-gpio:
-    simulation: true
+security.user.password: garagetest
+gpio.simulation: true
+
 garage:
     doors:
         1:

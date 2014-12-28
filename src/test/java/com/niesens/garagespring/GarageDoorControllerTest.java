@@ -30,9 +30,18 @@ public class GarageDoorControllerTest {
     @Value("${local.server.port}")
     private int port = 0;
 
+    private TestRestTemplate testRestTemplate = new TestRestTemplate("user", "garagetest");
+
+    @Test
+    public void testAuthenticationFailUnauthorized() {
+        ResponseEntity<Garage> entity = new TestRestTemplate("user", "garage").getForEntity(
+                "http://localhost:" + this.port + "/garage", Garage.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, entity.getStatusCode());
+    }
+
     @Test
     public void testGarage() {
-        ResponseEntity<Garage> entity = new TestRestTemplate().getForEntity(
+        ResponseEntity<Garage> entity = testRestTemplate.getForEntity(
                 "http://localhost:" + this.port + "/garage", Garage.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         Garage garage = entity.getBody();
@@ -44,7 +53,7 @@ public class GarageDoorControllerTest {
 
     @Test
     public void testGetGarageDoors() throws InvocationTargetException, IllegalAccessException {
-        ResponseEntity<Collection> entity = new TestRestTemplate().getForEntity(
+        ResponseEntity<Collection> entity = testRestTemplate.getForEntity(
                 "http://localhost:" + this.port + "/garageDoors", Collection.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         for (Map garageDoorProperties : (List<Map>) entity.getBody()) {
@@ -56,7 +65,7 @@ public class GarageDoorControllerTest {
 
     @Test
     public void testGetGarageDoor() {
-        ResponseEntity<GarageDoor> entity = new TestRestTemplate().getForEntity(
+        ResponseEntity<GarageDoor> entity = testRestTemplate.getForEntity(
                 "http://localhost:" + this.port + "/garageDoor/1", GarageDoor.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         assertGarageDoor(1, entity.getBody());
@@ -64,28 +73,28 @@ public class GarageDoorControllerTest {
 
     @Test
     public void testGetGarageDoorFailNotFound() {
-        ResponseEntity<GarageDoor> entity = new TestRestTemplate().getForEntity(
+        ResponseEntity<GarageDoor> entity = testRestTemplate.getForEntity(
                 "http://localhost:" + this.port + "/garageDoor/3", GarageDoor.class);
         assertEquals(HttpStatus.NOT_FOUND, entity.getStatusCode());
     }
 
     @Test
     public void testActivateOpener() {
-        ResponseEntity entity = new TestRestTemplate().exchange(
+        ResponseEntity entity = testRestTemplate.exchange(
                 "http://localhost:" + this.port + "/garageDoor/1?action=ACTIVATE_OPENER", HttpMethod.PUT, null, String.class);
         assertEquals(HttpStatus.ACCEPTED, entity.getStatusCode());
     }
 
     @Test
     public void testActivateOpenerFailNotFound() {
-        ResponseEntity entity = new TestRestTemplate().exchange(
+        ResponseEntity entity = testRestTemplate.exchange(
                 "http://localhost:" + this.port + "/garageDoor/3?action=ACTIVATE_OPENER", HttpMethod.PUT, null, String.class);
         assertEquals(HttpStatus.NOT_FOUND, entity.getStatusCode());
     }
 
     @Test
-    public void testActivateOpenerFail() {
-        ResponseEntity entity = new TestRestTemplate().exchange(
+    public void testActivateOpenerFailBadRequest() {
+        ResponseEntity entity = testRestTemplate.exchange(
                 "http://localhost:" + this.port + "/garageDoor/1?action=FAIL", HttpMethod.PUT, null, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
     }
